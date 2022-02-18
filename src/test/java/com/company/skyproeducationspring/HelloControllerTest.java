@@ -3,7 +3,9 @@ package com.company.skyproeducationspring;
 import com.company.skyproeducationspring.utils.BaseManualTestClass;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
@@ -12,6 +14,14 @@ import org.openqa.selenium.WebElement;
 @DisplayName("Hello Controller Test")
 @Epic("Hello service")
 public class HelloControllerTest extends BaseManualTestClass {
+    public static Object[][] correctWithUsernameDataProvider() {
+        return new Object[][]{
+                {"username", "Hello, username"},
+                {"Vasya", "Hello, Vasya"},
+                {"232324TbiDbiSh", "Hello, 232324TbiDbiSh"}
+        };
+    }
+
     @Test
     @Description("Check controller correct processing without `username` get-parameter")
     public void correctWithoutUsername() {
@@ -23,6 +33,8 @@ public class HelloControllerTest extends BaseManualTestClass {
         Assertions.assertEquals("Hello", body.getText());
     }
 
+    /* -------------------------------------------------------------------------------------------------------------------------------------------- */
+
     @ParameterizedTest
     @MethodSource("correctWithUsernameDataProvider")
     @Description("Check controller correct processing with `username` get-parameter")
@@ -33,15 +45,5 @@ public class HelloControllerTest extends BaseManualTestClass {
 
         Assertions.assertTrue(body.isDisplayed());
         Assertions.assertEquals(expected, body.getText());
-    }
-
-    /* -------------------------------------------------------------------------------------------------------------------------------------------- */
-
-    public static Object[][] correctWithUsernameDataProvider() {
-        return new Object[][]{
-                {"username", "Hello, username"},
-                {"Vasya", "Hello, Vasya"},
-                {"232324TbiDbiSh", "Hello, 232324TbiDbiSh"}
-        };
     }
 }

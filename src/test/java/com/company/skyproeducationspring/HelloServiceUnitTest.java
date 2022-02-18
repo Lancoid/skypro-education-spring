@@ -13,6 +13,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 @DisplayName("Hello Service Test")
 @Epic("HelloService")
 public class HelloServiceUnitTest {
+    public static Object[][] correctWithUsernameDataProvider() {
+        return new Object[][]{
+                {"username", "<b>Hello, username</b>"},
+                {"Vasya", "<b>Hello, Vasya</b>"},
+                {"232324TbiDbiSh", "<b>Hello, 232324TbiDbiSh</b>"}
+        };
+    }
+
     @Test
     @Description("Check service correct `hello()` processing")
     public void correctWithoutUsername() {
@@ -20,21 +28,13 @@ public class HelloServiceUnitTest {
         Assertions.assertEquals("<b>Hello</b>", service.hello());
     }
 
+    /* -------------------------------------------------------------------------------------------------------------------------------------------- */
+
     @Description("Check service correct `hello(String username)` processing")
     @ParameterizedTest
     @MethodSource("correctWithUsernameDataProvider")
     public void correctWithUsername(String username, String expected) {
         HelloServiceInterface service = new HelloService();
         Assertions.assertEquals(expected, service.hello(username));
-    }
-
-    /* -------------------------------------------------------------------------------------------------------------------------------------------- */
-
-    public static Object[][] correctWithUsernameDataProvider() {
-        return new Object[][]{
-                {"username", "<b>Hello, username</b>"},
-                {"Vasya", "<b>Hello, Vasya</b>"},
-                {"232324TbiDbiSh", "<b>Hello, 232324TbiDbiSh</b>"}
-        };
     }
 }
