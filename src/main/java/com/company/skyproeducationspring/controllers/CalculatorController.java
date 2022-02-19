@@ -1,37 +1,41 @@
 package com.company.skyproeducationspring.controllers;
 
 import com.company.skyproeducationspring.services.calculator.CalculatorServiceInterface;
+import com.company.skyproeducationspring.services.responseFormat.ResponseFormatServiceInterface;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/calculator")
 public class CalculatorController {
-    private final CalculatorServiceInterface service;
+    private final CalculatorServiceInterface calculatorService;
+    private final ResponseFormatServiceInterface responseFormatService;
 
-    public CalculatorController(CalculatorServiceInterface service) {
-        this.service = service;
+    public CalculatorController(CalculatorServiceInterface calculatorService, ResponseFormatServiceInterface responseFormatService) {
+        this.calculatorService = calculatorService;
+        this.responseFormatService = responseFormatService;
     }
 
-    @GetMapping(path = "/calculator/plus")
-    public String plus(@RequestParam(name = "a") int a, @RequestParam(name = "b") int b) {
-        return String.valueOf(service.plus(a, b));
+    @GetMapping(path = "/plus")
+    public String plus(int a, int b) {
+        return responseFormatService.calculatorResponse(a, b, '+', calculatorService.plus(a, b));
     }
 
-    @GetMapping(path = "/calculator/minus")
-    public String minus(@RequestParam(name = "a") int a, @RequestParam(name = "b") int b) {
-        return String.valueOf(service.minus(a, b));
+    @GetMapping(path = "/minus")
+    public String minus(int a, int b) {
+        return responseFormatService.calculatorResponse(a, b, '-', calculatorService.minus(a, b));
     }
 
-    @GetMapping(path = "/calculator/multiply")
-    public String multiply(@RequestParam(name = "a") int a, @RequestParam(name = "b") int b) {
-        return String.valueOf(service.multiply(a, b));
+    @GetMapping(path = "/multiply")
+    public String multiply(int a, int b) {
+        return responseFormatService.calculatorResponse(a, b, '*', calculatorService.multiply(a, b));
     }
 
-    @GetMapping(path = "/calculator/divide")
-    public String divide(@RequestParam(name = "a") int a, @RequestParam(name = "b") int b) {
+    @GetMapping(path = "/divide")
+    public String divide(int a, int b) {
         try {
-            return String.valueOf(service.divide(a, b));
+            return responseFormatService.calculatorResponse(a, b, '/', calculatorService.divide(a, b));
         } catch (Throwable throwable) {
             return throwable.getMessage();
         }

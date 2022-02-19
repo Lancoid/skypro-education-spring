@@ -15,33 +15,33 @@ import org.openqa.selenium.WebElement;
 public class CalculatorControllerTest extends BaseManualTestClass {
     public static Object[][] plusDataProvider() {
         return new Object[][]{
-                {-101, -101, "-202"},
-                {2, 3, "5"},
-                {11, 22, "33"}
+                {-101, -101, "-101 + (-101) = -202"},
+                {2, 3, "2 + 3 = 5"},
+                {11, 22, "11 + 22 = 33"}
         };
     }
 
     public static Object[][] minusDataProvider() {
         return new Object[][]{
-                {-101, -101, "0"},
-                {2, 3, "-1"},
-                {33, 11, "22"}
+                {-101, -101, "-101 - (-101) = 0"},
+                {2, 3, "2 - 3 = -1"},
+                {33, 11, "33 - 11 = 22"}
         };
     }
 
     public static Object[][] multiplyDataProvider() {
         return new Object[][]{
-                {-101, 2, "-202"},
-                {2, 3, "6"},
-                {101, 101, "10201"}
+                {-101, 2, "-101 * 2 = -202"},
+                {2, 3, "2 * 3 = 6"},
+                {101, 101, "101 * 101 = 10201"}
         };
     }
 
     public static Object[][] divideDataProvider() {
         return new Object[][]{
                 {-101, 0, "Нельзя делить на ноль"},
-                {4, 2, "2"},
-                {122, 11, "11"}
+                {4, 2, "4 / 2 = 2"},
+                {122, 11, "122 / 11 = 11"}
         };
     }
 
