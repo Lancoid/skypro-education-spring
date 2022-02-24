@@ -31,6 +31,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
     @Order(1)
     public void testCorrectAddFindRemove(String firstName, String lastName) {
         WebElement body;
+        WebElement div;
 
         /* -- Успешно добавляем сотрудника -- */
 
@@ -63,10 +64,10 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
         driver.get("http://localhost:8888/employee/find?firstName=" + firstName + "&lastName=" + lastName);
 
-        body = driver.findElement(By.cssSelector("body"));
+        div = driver.findElement(By.xpath("//body/div[2]"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник '" + firstName + " " + lastName + "' не найден", body.getText());
+        Assertions.assertTrue(div.isDisplayed());
+        Assertions.assertEquals("There was an unexpected error (type=Not Found, status=404).", div.getText());
     }
 
     @Description("Check service correct `add` , `find` and `remove` processing")
@@ -75,6 +76,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
     @Order(2)
     public void testEmployeeAlreadyAddedException(String firstName, String lastName) {
         WebElement body;
+        WebElement div;
 
         /* -- Успешно добавляем сотрудника -- */
 
@@ -89,10 +91,10 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
         driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
 
-        body = driver.findElement(By.cssSelector("body"));
+        div = driver.findElement(By.xpath("//body/div[2]"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник '" + firstName + " " + lastName + "' уже добавлен", body.getText());
+        Assertions.assertTrue(div.isDisplayed());
+        Assertions.assertEquals("There was an unexpected error (type=Bad Request, status=400).", div.getText());
 
         /* -- Успешно удаляем сотрудника -- */
 
@@ -109,6 +111,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
     @Order(3)
     public void testEmployeeNotAddedException() {
         WebElement body;
+        WebElement div;
         Name name = (new Faker()).name();
         String firstName;
         String lastName;
@@ -119,13 +122,16 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
             driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
 
-            body = driver.findElement(By.cssSelector("body"));
-
-            Assertions.assertTrue(body.isDisplayed());
 
             if (i == 5) {
-                Assertions.assertEquals("Нет места для добавления нового сотрудника", body.getText());
+                div = driver.findElement(By.xpath("//body/div[2]"));
+
+                Assertions.assertTrue(div.isDisplayed());
+                Assertions.assertEquals("There was an unexpected error (type=Internal Server Error, status=500).", div.getText());
             } else {
+                body = driver.findElement(By.cssSelector("body"));
+
+                Assertions.assertTrue(body.isDisplayed());
                 Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
             }
         }

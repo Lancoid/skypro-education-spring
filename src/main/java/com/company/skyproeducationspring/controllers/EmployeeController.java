@@ -17,34 +17,22 @@ public class EmployeeController {
 
     @GetMapping(path = "/add")
     public String add(String firstName, String lastName) {
-        try {
-            Employee employee = employeeService.add(firstName, lastName);
+        Employee employee = employeeService.add(firstName, lastName);
 
-            return "Сотрудник добавлен : " + employee;
-        } catch (RuntimeException exception) {
-            return exception.getMessage();
-        }
+        return "Сотрудник добавлен : " + employee;
     }
 
     @GetMapping(path = "/remove")
     public String remove(String firstName, String lastName) {
-        try {
-            Employee employee = employeeService.remove(firstName, lastName);
+        Employee employee = employeeService.remove(firstName, lastName);
 
-            return "Сотрудник удалён : " + employee;
-        } catch (RuntimeException exception) {
-            return exception.getMessage();
-        }
+        return "Сотрудник удалён : " + employee;
     }
 
     @GetMapping(path = "/find")
     public String find(String firstName, String lastName) {
-        try {
-            Employee employee = employeeService.find(firstName, lastName);
+        Employee employee = employeeService.find(firstName, lastName);
 
-            return "Сотрудник найден : " + employee;
-        } catch (RuntimeException exception) {
-            return exception.getMessage();
-        }
+        return "Сотрудник найден : " + employee;
     }
 }
