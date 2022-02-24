@@ -31,8 +31,14 @@ public class EmployeeController {
 
     @GetMapping(path = "/find")
     public String find(String firstName, String lastName) {
-        Employee employee = employeeService.find(firstName, lastName);
+        Employee employee = employeeService.findOne(firstName, lastName);
 
         return "Сотрудник найден : " + employee;
+    }
+
+    @GetMapping(path = "/find-all")
+    public String findAll() {
+
+        return employeeService.findAll().toString();
     }
 }

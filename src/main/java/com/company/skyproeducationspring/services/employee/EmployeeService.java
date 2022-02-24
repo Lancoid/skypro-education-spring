@@ -1,58 +1,48 @@
 package com.company.skyproeducationspring.services.employee;
 
 import com.company.skyproeducationspring.exceptions.EmployeeAlreadyAddedException;
-import com.company.skyproeducationspring.exceptions.EmployeeNotAddedException;
 import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
 import com.company.skyproeducationspring.models.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
 public class EmployeeService implements EmployeeServiceInterface {
-    private final Employee[] employeeList;
+    private final ArrayList<Employee> employeeList;
 
     public EmployeeService() {
-        this.employeeList = new Employee[5];
+        this.employeeList = new ArrayList<>();
     }
 
     @Override
     public Employee add(String firstName, String lastName) {
-        Integer id = null;
-
-        for (int i = 0; i < employeeList.length; i++) {
-            if (employeeList[i] != null && checkEmployee(employeeList[i], firstName, lastName)) {
+        for (Employee value : employeeList) {
+            if (value != null && checkEmployee(value, firstName, lastName)) {
                 throw new EmployeeAlreadyAddedException("Сотрудник '" + firstName + " " + lastName + "' уже добавлен");
             }
-
-            if (employeeList[i] == null && id == null) {
-                id = i;
-            }
         }
 
-        if (id != null) {
-            employeeList[id] = new Employee(firstName, lastName);
-            log.info("EmployeeService: add {}", employeeList[id]);
-            log.info("EmployeeService: employeeList {}", Arrays.toString(employeeList));
+        Employee employee = new Employee(firstName, lastName);
+        employeeList.add(employee);
+        log.info("EmployeeService: add {}", employee);
+        log.info("EmployeeService: employeeList {}", employeeList);
 
-            return employeeList[id];
-        }
-
-        throw new EmployeeNotAddedException("Нет места для добавления нового сотрудника");
+        return employee;
     }
 
     @Override
     public Employee remove(String firstName, String lastName) {
         Employee employee;
 
-        for (int i = 0; i < employeeList.length; i++) {
-            if (employeeList[i] != null && checkEmployee(employeeList[i], firstName, lastName)) {
-                employee = employeeList[i];
-                employeeList[i] = null;
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (employeeList.get(i) != null && checkEmployee(employeeList.get(i), firstName, lastName)) {
+                employee = employeeList.get(i);
+                employeeList.remove(i);
                 log.info("EmployeeService: remove {}", employee);
-                log.info("EmployeeService: employeeList {}", Arrays.toString(employeeList));
+                log.info("EmployeeService: employeeList {}", employeeList);
 
                 return employee;
             }
@@ -62,7 +52,7 @@ public class EmployeeService implements EmployeeServiceInterface {
     }
 
     @Override
-    public Employee find(String firstName, String lastName) {
+    public Employee findOne(String firstName, String lastName) {
         for (Employee employee : employeeList) {
             if (employee != null && checkEmployee(employee, firstName, lastName)) {
                 log.info("EmployeeService: find {}", employee);
@@ -71,6 +61,11 @@ public class EmployeeService implements EmployeeServiceInterface {
         }
 
         throw new EmployeeNotFoundException("Сотрудник '" + firstName + " " + lastName + "' не найден");
+    }
+
+    @Override
+    public ArrayList<Employee> findAll() {
+        return employeeList;
     }
 
     private boolean checkEmployee(Employee employee, String firstName, String lastName) {

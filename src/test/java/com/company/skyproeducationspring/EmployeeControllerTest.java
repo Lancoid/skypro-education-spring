@@ -25,7 +25,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- */
 
-    @Description("Check service correct `plus` calculations")
+    @Description("Check controller correct processing `add`/`find`/`remove` actions")
     @ParameterizedTest
     @MethodSource("correctProvider")
     @Order(1)
@@ -70,7 +70,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
         Assertions.assertEquals("There was an unexpected error (type=Not Found, status=404).", div.getText());
     }
 
-    @Description("Check service correct `add` , `find` and `remove` processing")
+    @Description("Check controller correct processing `EmployeeAlreadyAddedException`")
     @ParameterizedTest
     @MethodSource("correctProvider")
     @Order(2)
@@ -107,33 +107,42 @@ public class EmployeeControllerTest extends BaseManualTestClass {
     }
 
     @Test
-    @Description("Check service correct `add` , `find` and `remove` processing")
+    @Description("Check controller correct processing `find-all` action")
     @Order(3)
     public void testEmployeeNotAddedException() {
         WebElement body;
-        WebElement div;
         Name name = (new Faker()).name();
         String firstName;
         String lastName;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
 
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 0; i < 5; i++) {
             firstName = name.firstName();
             lastName = name.lastName();
 
             driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
 
+            body = driver.findElement(By.cssSelector("body"));
 
-            if (i == 5) {
-                div = driver.findElement(By.xpath("//body/div[2]"));
+            Assertions.assertTrue(body.isDisplayed());
+            Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
 
-                Assertions.assertTrue(div.isDisplayed());
-                Assertions.assertEquals("There was an unexpected error (type=Internal Server Error, status=500).", div.getText());
-            } else {
-                body = driver.findElement(By.cssSelector("body"));
-
-                Assertions.assertTrue(body.isDisplayed());
-                Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
-            }
+            stringBuilder
+                    .append(i != 0 ? ", " : "")
+                    .append("Employee {firstName='")
+                    .append(firstName)
+                    .append("', lastName='")
+                    .append(lastName)
+                    .append("'}");
         }
+
+        stringBuilder.append("]");
+
+        driver.get("http://localhost:8888/employee/find-all");
+
+        body = driver.findElement(By.cssSelector("body"));
+
+        Assertions.assertEquals(stringBuilder.toString(), body.getText());
     }
 }
