@@ -109,7 +109,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
     @Test
     @Description("Check controller correct processing `find-all` action")
     @Order(3)
-    public void testEmployeeNotAddedException() {
+    public void testEmployeeFindAll() {
         WebElement body;
         Name name = (new Faker()).name();
         String firstName;
@@ -129,12 +129,12 @@ public class EmployeeControllerTest extends BaseManualTestClass {
             Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
 
             stringBuilder
-                    .append(i != 0 ? ", " : "")
-                    .append("Employee {firstName='")
+                    .append(i != 0 ? "," : "")
+                    .append("{\"firstName\":\"")
                     .append(firstName)
-                    .append("', lastName='")
+                    .append("\",\"lastName\":\"")
                     .append(lastName)
-                    .append("'}");
+                    .append("\"}");
         }
 
         stringBuilder.append("]");

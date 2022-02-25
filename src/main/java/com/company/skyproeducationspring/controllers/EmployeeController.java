@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
@@ -37,8 +39,8 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/find-all")
-    public String findAll() {
+    public ArrayList<Employee> findAll() {
 
-        return employeeService.findAll().toString();
+        return employeeService.findAll();
     }
 }
