@@ -1,7 +1,6 @@
 package com.company.skyproeducationspring;
 
 import com.company.skyproeducationspring.exceptions.EmployeeAlreadyAddedException;
-import com.company.skyproeducationspring.exceptions.EmployeeNotAddedException;
 import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
 import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.services.employee.EmployeeService;
@@ -15,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
 
 @DisplayName("Employee Service Test")
 @Epic("EmployeeService")
@@ -44,7 +45,7 @@ public class EmployeeServiceUnitTest {
 
         /* -- Успешно находим сотрудника -- */
 
-        Employee foundedEmployee = service.find(firstName, lastName);
+        Employee foundedEmployee = service.findOne(firstName, lastName);
 
         Assertions.assertEquals(firstName, foundedEmployee.getFirstName());
         Assertions.assertEquals(lastName, foundedEmployee.getLastName());
@@ -58,7 +59,7 @@ public class EmployeeServiceUnitTest {
 
         /* -- Не находим сотрудника -- */
 
-        Exception exception = Assertions.assertThrows(EmployeeNotFoundException.class, () -> service.find(firstName, lastName));
+        Exception exception = Assertions.assertThrows(EmployeeNotFoundException.class, () -> service.findOne(firstName, lastName));
 
         String expectedMessage = "Сотрудник '" + firstName + " " + lastName + "' не найден";
         String actualMessage = exception.getMessage();
@@ -94,24 +95,17 @@ public class EmployeeServiceUnitTest {
     }
 
     @Test
-    @Description("Check service correct `add` , `find` and `remove` processing")
-    public void testEmployeeNotAddedException() {
+    @Description("Check service correct `findAll` processing")
+    public void testFindAll() {
         EmployeeServiceInterface service = new EmployeeService();
         Faker faker = new Faker();
+        Name name = faker.name();
+        ArrayList<Employee> resultArray = new ArrayList<>();
 
-        for (int i = 0; i < 6; i++) {
-            Name name = faker.name();
-
-            if (i > 4) {
-                Exception exception = Assertions.assertThrows(EmployeeNotAddedException.class, () -> service.add(name.firstName(), name.lastName()));
-
-                String expectedMessage = "Нет места для добавления нового сотрудника";
-                String actualMessage = exception.getMessage();
-
-                Assertions.assertTrue(actualMessage.contains(expectedMessage));
-            } else {
-                service.add(name.firstName(), name.lastName());
-            }
+        for (int i = 0; i < 10; i++) {
+            resultArray.add(service.add(name.firstName(), name.lastName()));
         }
+
+        Assertions.assertEquals(resultArray, service.findAll());
     }
 }

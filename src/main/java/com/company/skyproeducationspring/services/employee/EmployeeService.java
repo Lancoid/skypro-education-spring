@@ -7,37 +7,30 @@ import com.company.skyproeducationspring.models.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 @Service
 @Slf4j
 public class EmployeeService implements EmployeeServiceInterface {
-    private final Employee[] employeeList;
+    private final ArrayList<Employee> employeeList;
 
     public EmployeeService() {
-        this.employeeList = new Employee[5];
+        this.employeeList = new ArrayList<>();
     }
 
     @Override
     public Employee add(String firstName, String lastName) {
-        Integer id = null;
+        Employee employee = new Employee(firstName, lastName);
 
-        for (int i = 0; i < employeeList.length; i++) {
-            if (employeeList[i] != null && checkEmployee(employeeList[i], firstName, lastName)) {
-                throw new EmployeeAlreadyAddedException("Сотрудник '" + firstName + " " + lastName + "' уже добавлен");
-            }
-
-            if (employeeList[i] == null && id == null) {
-                id = i;
-            }
+        if (employeeList.contains(employee)) {
+            throw new EmployeeAlreadyAddedException("Сотрудник '" + firstName + " " + lastName + "' уже добавлен");
         }
 
-        if (id != null) {
-            employeeList[id] = new Employee(firstName, lastName);
-            log.info("EmployeeService: add {}", employeeList[id]);
-            log.info("EmployeeService: employeeList {}", Arrays.toString(employeeList));
+        if (employeeList.add(employee)) {
+            log.info("EmployeeService: add {}", employee);
+            log.info("EmployeeService: employeeList {}", employeeList);
 
-            return employeeList[id];
+            return employee;
         }
 
         throw new EmployeeNotAddedException("Нет места для добавления нового сотрудника");
@@ -45,38 +38,33 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public Employee remove(String firstName, String lastName) {
-        Employee employee;
+        Employee employee = new Employee(firstName, lastName);
 
-        for (int i = 0; i < employeeList.length; i++) {
-            if (employeeList[i] != null && checkEmployee(employeeList[i], firstName, lastName)) {
-                employee = employeeList[i];
-                employeeList[i] = null;
-                log.info("EmployeeService: remove {}", employee);
-                log.info("EmployeeService: employeeList {}", Arrays.toString(employeeList));
+        if (employeeList.contains(employee) && employeeList.remove(employee)) {
+            log.info("EmployeeService: remove {}", employee);
+            log.info("EmployeeService: employeeList {}", employeeList);
 
-                return employee;
-            }
+            return employee;
         }
 
         throw new EmployeeNotFoundException("Сотрудник '" + firstName + " " + lastName + "' не найден");
     }
 
     @Override
-    public Employee find(String firstName, String lastName) {
-        for (Employee employee : employeeList) {
-            if (employee != null && checkEmployee(employee, firstName, lastName)) {
-                log.info("EmployeeService: find {}", employee);
-                return employee;
-            }
+    public Employee findOne(String firstName, String lastName) {
+        Employee employee = new Employee(firstName, lastName);
+
+        if (employeeList.contains(employee)) {
+            log.info("EmployeeService: find {}", employee);
+
+            return employee;
         }
 
         throw new EmployeeNotFoundException("Сотрудник '" + firstName + " " + lastName + "' не найден");
     }
 
-    private boolean checkEmployee(Employee employee, String firstName, String lastName) {
-        boolean isEqualsFirstName = employee.getFirstName().equals(firstName);
-        boolean isEqualsLastName = employee.getLastName().equals(lastName);
-
-        return isEqualsFirstName && isEqualsLastName;
+    @Override
+    public ArrayList<Employee> findAll() {
+        return employeeList;
     }
 }
