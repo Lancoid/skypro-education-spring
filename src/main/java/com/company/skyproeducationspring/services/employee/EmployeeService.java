@@ -33,14 +33,14 @@ public class EmployeeService implements EmployeeServiceInterface {
             return employee;
         }
 
-        throw new EmployeeNotAddedException("Нет места для добавления нового сотрудника");
+        throw new EmployeeNotAddedException("Нет удалось добавить сотрудника");
     }
 
     @Override
     public Employee remove(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
 
-        if (employeeList.contains(employee) && employeeList.remove(employee)) {
+        if (employeeList.remove(employee)) {
             log.info("EmployeeService: remove {}", employee);
             log.info("EmployeeService: employeeList {}", employeeList);
 
@@ -65,6 +65,6 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public ArrayList<Employee> findAll() {
-        return employeeList;
+        return new ArrayList<>(employeeList);
     }
 }
