@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 public class HelloService implements HelloServiceInterface {
     @Override
     public String hello() {
-        return "<b>Hello</b>";
+        return "Hello";
     }
 
     @Override
     public String hello(String username) {
-        return "<b>Hello, " + username + "</b>";
+        return "Hello, " + username;
     }
 }

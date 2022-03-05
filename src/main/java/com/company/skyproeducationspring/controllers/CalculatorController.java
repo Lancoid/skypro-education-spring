@@ -2,11 +2,12 @@ package com.company.skyproeducationspring.controllers;
 
 import com.company.skyproeducationspring.services.calculator.CalculatorServiceInterface;
 import com.company.skyproeducationspring.services.responseFormat.ResponseFormatServiceInterface;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequestMapping("/calculator")
 public class CalculatorController {
     private final CalculatorServiceInterface calculatorService;
@@ -18,26 +19,33 @@ public class CalculatorController {
     }
 
     @GetMapping(path = "/plus")
-    public String plus(int a, int b) {
-        return responseFormatService.calculatorResponse(a, b, '+', calculatorService.plus(a, b));
+    public String plus(int a, int b, Model model) {
+        model.addAttribute("text", responseFormatService.calculatorResponse(a, b, '+', calculatorService.plus(a, b)));
+
+        return "calculator/plus";
     }
 
     @GetMapping(path = "/minus")
-    public String minus(int a, int b) {
-        return responseFormatService.calculatorResponse(a, b, '-', calculatorService.minus(a, b));
+    public String minus(int a, int b, Model model) {
+        model.addAttribute("text", responseFormatService.calculatorResponse(a, b, '-', calculatorService.minus(a, b)));
+
+        return "calculator/minus";
     }
 
     @GetMapping(path = "/multiply")
-    public String multiply(int a, int b) {
-        return responseFormatService.calculatorResponse(a, b, '*', calculatorService.multiply(a, b));
+    public String multiply(int a, int b, Model model) {
+        model.addAttribute("text", responseFormatService.calculatorResponse(a, b, '*', calculatorService.multiply(a, b)));
+
+        return "calculator/multiply";
     }
 
     @GetMapping(path = "/divide")
-    public String divide(int a, int b) {
+    public String divide(int a, int b, Model model) {
         try {
-            return responseFormatService.calculatorResponse(a, b, '/', calculatorService.divide(a, b));
+            model.addAttribute("text", responseFormatService.calculatorResponse(a, b, '/', calculatorService.divide(a, b)));
         } catch (Throwable throwable) {
             return throwable.getMessage();
         }
+        return "calculator/divide";
     }
 }
