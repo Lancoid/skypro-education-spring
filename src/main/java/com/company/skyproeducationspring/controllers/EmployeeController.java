@@ -1,14 +1,12 @@
 package com.company.skyproeducationspring.controllers;
 
-import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.services.employee.EmployeeServiceInterface;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
-@RestController
+@Controller
 @RequestMapping("/employee")
 public class EmployeeController {
     private final EmployeeServiceInterface employeeService;
@@ -18,29 +16,30 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/add")
-    public String add(String firstName, String lastName) {
-        Employee employee = employeeService.add(firstName, lastName);
+    public String add(String firstName, String lastName, Model model) {
+        model.addAttribute("employee", employeeService.add(firstName, lastName));
 
-        return "Сотрудник добавлен : " + employee;
+        return "employee/add";
     }
 
     @GetMapping(path = "/remove")
-    public String remove(String firstName, String lastName) {
-        Employee employee = employeeService.remove(firstName, lastName);
+    public String remove(String firstName, String lastName, Model model) {
+        model.addAttribute("employee", employeeService.remove(firstName, lastName));
 
-        return "Сотрудник удалён : " + employee;
+        return "employee/remove";
     }
 
     @GetMapping(path = "/find")
-    public String find(String firstName, String lastName) {
-        Employee employee = employeeService.findOne(firstName, lastName);
+    public String find(String firstName, String lastName, Model model) {
+        model.addAttribute("employee", employeeService.findOne(firstName, lastName));
 
-        return "Сотрудник найден : " + employee;
+        return "employee/find";
     }
 
     @GetMapping(path = "/find-all")
-    public ArrayList<Employee> findAll() {
+    public String findAll(Model model) {
+        model.addAttribute("employees", employeeService.findAll());
 
-        return employeeService.findAll();
+        return "employee/find-all";
     }
 }
