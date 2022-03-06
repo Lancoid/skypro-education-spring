@@ -20,12 +20,12 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public Employee add(String firstName, String lastName) {
-        if (employeeList.containsKey(firstName + " " + lastName)) {
+        if (employeeList.containsKey(generateKey(firstName, lastName))) {
             throw new EmployeeAlreadyAddedException("Сотрудник '" + firstName + " " + lastName + "' уже добавлен");
         }
 
         Employee employee = new Employee(firstName, lastName);
-        employeeList.put(firstName + " " + lastName, employee);
+        employeeList.put(generateKey(firstName, lastName), employee);
 
         log.info("EmployeeService: add {}", employee);
         log.info("EmployeeService: employeeList {}", employeeList);
@@ -35,7 +35,7 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public Employee remove(String firstName, String lastName) {
-        Employee employee = employeeList.remove(firstName + " " + lastName);
+        Employee employee = employeeList.remove(generateKey(firstName, lastName));
 
         if (employee != null) {
             log.info("EmployeeService: remove {}", employee);
@@ -49,7 +49,7 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public Employee findOne(String firstName, String lastName) {
-        Employee employee = employeeList.get(firstName + " " + lastName);
+        Employee employee = employeeList.get(generateKey(firstName, lastName));
 
         if (employee != null) {
             log.info("EmployeeService: find {}", employee);
@@ -63,5 +63,9 @@ public class EmployeeService implements EmployeeServiceInterface {
     @Override
     public ArrayList<Employee> findAll() {
         return new ArrayList<>(employeeList.values());
+    }
+
+    private String generateKey(String firstName, String lastName) {
+        return firstName + " " + lastName;
     }
 }
