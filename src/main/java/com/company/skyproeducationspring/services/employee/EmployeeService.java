@@ -1,46 +1,43 @@
 package com.company.skyproeducationspring.services.employee;
 
 import com.company.skyproeducationspring.exceptions.EmployeeAlreadyAddedException;
-import com.company.skyproeducationspring.exceptions.EmployeeNotAddedException;
 import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
 import com.company.skyproeducationspring.models.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Service
 @Slf4j
 public class EmployeeService implements EmployeeServiceInterface {
-    private final ArrayList<Employee> employeeList;
+    private final HashMap<String, Employee> employeeList;
 
     public EmployeeService() {
-        this.employeeList = new ArrayList<>();
+        this.employeeList = new HashMap<>();
     }
 
     @Override
     public Employee add(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-
-        if (employeeList.contains(employee)) {
+        if (employeeList.containsKey(generateKey(firstName, lastName))) {
             throw new EmployeeAlreadyAddedException("Сотрудник '" + firstName + " " + lastName + "' уже добавлен");
         }
 
-        if (employeeList.add(employee)) {
-            log.info("EmployeeService: add {}", employee);
-            log.info("EmployeeService: employeeList {}", employeeList);
+        Employee employee = new Employee(firstName, lastName);
+        employeeList.put(generateKey(firstName, lastName), employee);
 
-            return employee;
-        }
+        log.info("EmployeeService: add {}", employee);
+        log.info("EmployeeService: employeeList {}", employeeList);
 
-        throw new EmployeeNotAddedException("Нет удалось добавить сотрудника");
+        return employee;
     }
 
     @Override
     public Employee remove(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = employeeList.remove(generateKey(firstName, lastName));
 
-        if (employeeList.remove(employee)) {
+        if (employee != null) {
             log.info("EmployeeService: remove {}", employee);
             log.info("EmployeeService: employeeList {}", employeeList);
 
@@ -52,9 +49,9 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public Employee findOne(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = employeeList.get(generateKey(firstName, lastName));
 
-        if (employeeList.contains(employee)) {
+        if (employee != null) {
             log.info("EmployeeService: find {}", employee);
 
             return employee;
@@ -65,6 +62,10 @@ public class EmployeeService implements EmployeeServiceInterface {
 
     @Override
     public ArrayList<Employee> findAll() {
-        return new ArrayList<>(employeeList);
+        return new ArrayList<>(employeeList.values());
+    }
+
+    private String generateKey(String firstName, String lastName) {
+        return firstName + " " + lastName;
     }
 }
