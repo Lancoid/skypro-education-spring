@@ -8,6 +8,8 @@
         <tr th:each="employee : ${employees}">
             <td th:text="${employee.getFirstName()}"></td>
             <td th:text="${employee.getLastName()}"></td>
+            <td th:text="${employee.getDepartment()}"></td>
+            <td th:text="${employee.getSalary()}"></td>
         </tr>
     </table>
 </div>

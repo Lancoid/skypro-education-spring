@@ -10,6 +10,8 @@ import java.util.Objects;
 public class Employee {
     private final String firstName;
     private final String lastName;
+    private int department;
+    private float salary;
 
     @Override
     public boolean equals(Object o) {
@@ -33,6 +35,11 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee {" + "firstName='" + firstName + "'" + ", lastName='" + lastName + "'" + "}";
+        return "Employee {" +
+                "firstName='" + firstName + "'" +
+                ", lastName='" + lastName + "'" +
+                ", department='" + department + "'" +
+                ", salary=" + salary +
+                "}";
     }
 }
