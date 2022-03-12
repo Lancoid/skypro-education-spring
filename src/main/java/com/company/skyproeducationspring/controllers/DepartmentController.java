@@ -1,28 +1,30 @@
 package com.company.skyproeducationspring.controllers;
 
 import com.company.skyproeducationspring.models.Employee;
-import com.company.skyproeducationspring.services.employee.EmployeeServiceInterface;
+import com.company.skyproeducationspring.services.department.DepartmentServiceInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
 @RequestMapping("/department")
 public class DepartmentController {
-    private final EmployeeServiceInterface employeeService;
+    private final DepartmentServiceInterface departmentService;
 
-    public DepartmentController(EmployeeServiceInterface employeeService) {
-        this.employeeService = employeeService;
+    public DepartmentController(DepartmentServiceInterface departmentService) {
+        this.departmentService = departmentService;
     }
 
     @GetMapping(path = "/max-salary")
     public String maxSalary(int departmentId, Model model) {
-        Employee employee = employeeService.maxSalary(departmentId);
+        Employee employee = departmentService.maxSalary(departmentId);
         model.addAttribute("employee", employee);
 
         log.info("DepartmentController: maxSalary {}", employee);
@@ -32,7 +34,7 @@ public class DepartmentController {
 
     @GetMapping(path = "/min-salary")
     public String minSalary(int departmentId, Model model) {
-        Employee employee = employeeService.minSalary(departmentId);
+        Employee employee = departmentService.minSalary(departmentId);
         model.addAttribute("employee", employee);
 
         log.info("DepartmentService: minSalary {}", employee);
@@ -40,22 +42,21 @@ public class DepartmentController {
         return "department/min-salary";
     }
 
-    @GetMapping(path = "/all?departmentId=\\d+")
-    public String allByDepartmentId(int departmentId, Model model) {
-        ArrayList<Employee> employees = employeeService.findAll(departmentId);
-        model.addAttribute("employees", employees);
-
-        log.info("DepartmentController: allByDepartment " + departmentId + " {}", employees);
-
-        return "department/all";
-    }
-
     @GetMapping(path = "/all")
-    public String findAll(Model model) {
-        ArrayList<Employee> employees = employeeService.findAll();
-        model.addAttribute("employees", employees);
+    public String all(@RequestParam(required = false) String departmentId, Model model) {
+        Map<Integer, List<Employee>> employees;
 
-        log.info("DepartmentController: allByDepartments {}", employees);
+        if (departmentId != null) {
+            employees = departmentService.findAll(Integer.parseInt(departmentId));
+
+            log.info("DepartmentController: allByDepartment " + departmentId + " {}", employees);
+        } else {
+            employees = departmentService.findAll();
+
+            log.info("DepartmentController: allByDepartments {}", employees);
+        }
+
+        model.addAttribute("employees", employees);
 
         return "department/all";
     }

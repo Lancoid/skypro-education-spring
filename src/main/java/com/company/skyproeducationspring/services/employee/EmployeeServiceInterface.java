@@ -9,13 +9,7 @@ public interface EmployeeServiceInterface {
 
     Employee remove(String firstName, String lastName);
 
-    Employee minSalary(int departmentId);
-
-    Employee maxSalary(int departmentId);
-
     Employee findOne(String firstName, String lastName);
 
     ArrayList<Employee> findAll();
-
-    ArrayList<Employee> findAll(int departmentId);
 }

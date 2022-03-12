@@ -6,9 +6,7 @@ import com.company.skyproeducationspring.models.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService implements EmployeeServiceInterface {
@@ -42,24 +40,6 @@ public class EmployeeService implements EmployeeServiceInterface {
     }
 
     @Override
-    public Employee minSalary(int departmentId) {
-        return employeeList
-                .values()
-                .stream()
-                .min(Comparator.comparing(Employee::getSalary))
-                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с минимальной зарплатой не найден"));
-    }
-
-    @Override
-    public Employee maxSalary(int departmentId) {
-        return employeeList
-                .values()
-                .stream()
-                .max(Comparator.comparing(Employee::getSalary))
-                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));
-    }
-
-    @Override
     public Employee findOne(String firstName, String lastName) {
         Employee employee = employeeList.get(generateKey(firstName, lastName));
 
@@ -73,15 +53,6 @@ public class EmployeeService implements EmployeeServiceInterface {
     @Override
     public ArrayList<Employee> findAll() {
         return new ArrayList<>(employeeList.values());
-    }
-
-    @Override
-    public ArrayList<Employee> findAll(int departmentId) {
-        return employeeList
-                .values()
-                .stream()
-                .filter(employee -> departmentId == employee.getDepartment())
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private String generateKey(String firstName, String lastName) {

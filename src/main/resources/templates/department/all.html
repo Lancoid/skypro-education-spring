@@ -3,15 +3,23 @@
 <body>
 <div layout:fragment="content">
     <h1>Список сотрудников</h1>
-    <table class="table table-bordered table-dark">
-        <tr th:each="employee : ${employees}">
-            <!--/*@thymesVar id="employee" type="com.company.skyproeducationspring.models.Employee"*/-->
-            <td th:text="${employee.getFirstName()}"></td>
-            <td th:text="${employee.getLastName()}"></td>
-            <td th:text="${employee.getDepartment()}"></td>
-            <td th:text="${employee.getSalary()}"></td>
-        </tr>
-    </table>
+    <div th:each="entry : ${employees}">
+        <table class="table table-bordered table-dark">
+            <thead>
+            <tr>
+                <th th:text="${entry.key}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="employee : ${entry.value}">
+                <td th:text="${employee.getFirstName()}"></td>
+                <td th:text="${employee.getLastName()}"></td>
+                <td th:text="${employee.getDepartment()}"></td>
+                <td th:text="${employee.getSalary()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>
