@@ -47,51 +47,77 @@ public class CalculatorControllerTest extends BaseManualTestClass {
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- */
 
-    @Description("Check service correct `plus` calculations")
+    @Description("Check controller correct `plus` calculations")
     @ParameterizedTest
     @MethodSource("plusDataProvider")
     public void plus(int a, int b, String expected) {
         driver.get("http://localhost:8888/calculator/plus?a=" + a + "&b=" + b);
 
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals(expected, body.getText());
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals("Сложение в калькуляторе", h1.getText());
+
+        WebElement code = driver.findElement(By.cssSelector("div.starter-template > code:nth-child(2)"));
+
+        Assertions.assertTrue(code.isDisplayed());
+        Assertions.assertEquals(expected, code.getText());
     }
 
-    @Description("Check service correct `minus` calculations")
+    @Description("Check controller correct `minus` calculations")
     @ParameterizedTest
     @MethodSource("minusDataProvider")
     public void minus(int a, int b, String expected) {
         driver.get("http://localhost:8888/calculator/minus?a=" + a + "&b=" + b);
 
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals(expected, body.getText());
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals("Вычитание в калькуляторе", h1.getText());
+
+        WebElement code = driver.findElement(By.cssSelector("div.starter-template > code:nth-child(2)"));
+
+        Assertions.assertTrue(code.isDisplayed());
+        Assertions.assertEquals(expected, code.getText());
     }
 
-    @Description("Check service correct `multiply` calculations")
+    @Description("Check controller correct `multiply` calculations")
     @ParameterizedTest
     @MethodSource("multiplyDataProvider")
     public void multiply(int a, int b, String expected) {
         driver.get("http://localhost:8888/calculator/multiply?a=" + a + "&b=" + b);
 
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals(expected, body.getText());
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals("Умножение в калькуляторе", h1.getText());
+
+        WebElement code = driver.findElement(By.cssSelector("div.starter-template > code:nth-child(2)"));
+
+        Assertions.assertTrue(code.isDisplayed());
+        Assertions.assertEquals(expected, code.getText());
     }
 
-    @Description("Check service correct `divide` calculations")
+    @Description("Check controller correct `divide` calculations")
     @ParameterizedTest
     @MethodSource("divideDataProvider")
     public void divide(int a, int b, String expected) {
         driver.get("http://localhost:8888/calculator/divide?a=" + a + "&b=" + b);
 
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement element;
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals(expected, body.getText());
+        try {
+            WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
+
+            Assertions.assertTrue(h1.isDisplayed());
+            Assertions.assertEquals("Деление в калькуляторе", h1.getText());
+
+            element = driver.findElement(By.cssSelector("div.starter-template > code:nth-child(2)"));
+        } catch (Throwable throwable) {
+            element = driver.findElement(By.cssSelector("td#error-message"));
+        }
+
+        Assertions.assertTrue(element.isDisplayed());
+        Assertions.assertEquals(expected, element.getText());
     }
 }

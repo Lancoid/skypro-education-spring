@@ -7,11 +7,19 @@
         <!--/*@thymesVar id="employee" type="com.company.skyproeducationspring.models.Employee"*/-->
         <tr>
             <td>First name</td>
-            <td th:text="${employee.getFirstName()}"></td>
+            <td id="employee-first-name" th:text="${employee.getFirstName()}"></td>
         </tr>
         <tr>
             <td>Last name</td>
-            <td th:text="${employee.getLastName()}"></td>
+            <td id="employee-last-name" th:text="${employee.getLastName()}"></td>
+        </tr>
+        <tr>
+            <td>Department</td>
+            <td id="employee-department" th:text="${employee.getDepartment()}"></td>
+        </tr>
+        <tr>
+            <td>Salary</td>
+            <td id="employee-salary" th:text="${employee.getSalary()}"></td>
         </tr>
     </table>
 </div>

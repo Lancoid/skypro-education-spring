@@ -2,24 +2,24 @@
 <html lang="en" layout:decorate="~{layouts/layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <body>
 <div layout:fragment="content">
-    <h1>Сотрудник удалён</h1>
+    <h1>Информация по сотруднику с максимальной зарплатой</h1>
     <table class="table table-bordered table-dark">
         <!--/*@thymesVar id="employee" type="com.company.skyproeducationspring.models.Employee"*/-->
         <tr>
             <td>First name</td>
-            <td id="employee-first-name" th:text="${employee.getFirstName()}"></td>
+            <td th:text="${employee.getFirstName()}"></td>
         </tr>
         <tr>
             <td>Last name</td>
-            <td id="employee-last-name" th:text="${employee.getLastName()}"></td>
+            <td th:text="${employee.getLastName()}"></td>
         </tr>
         <tr>
             <td>Department</td>
-            <td id="employee-department" th:text="${employee.getDepartment()}"></td>
+            <td th:text="${employee.getDepartment()}"></td>
         </tr>
         <tr>
             <td>Salary</td>
-            <td id="employee-salary" th:text="${employee.getSalary()}"></td>
+            <td th:text="${employee.getSalary()}"></td>
         </tr>
     </table>
 </div>

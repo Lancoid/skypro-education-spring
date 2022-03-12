@@ -5,8 +5,7 @@ import com.company.skyproeducationspring.models.Employee;
 import java.util.ArrayList;
 
 public interface EmployeeServiceInterface {
-
-    Employee add(String firstName, String lastName);
+    Employee add(String firstName, String lastName, int department, float salary);
 
     Employee remove(String firstName, String lastName);
 

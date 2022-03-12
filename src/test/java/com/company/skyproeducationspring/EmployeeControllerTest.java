@@ -1,5 +1,6 @@
 package com.company.skyproeducationspring;
 
+import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.utils.BaseManualTestClass;
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
@@ -11,15 +12,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+
 @DisplayName("Employee Controller Test")
 @Epic("EmployeeService")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EmployeeControllerTest extends BaseManualTestClass {
     public static Object[][] correctProvider() {
         return new Object[][]{
-                {"Иван", "Иванов"},
-                {"Ivan", "Ivanov"},
-                {"22аа", "333ббб"},
+                {"Иван", "Иванов", 1, 1000.11f},
+                {"Ivan", "Ivanov", 2, 2000.22f},
+                {"22аа", "333ббб", 3, 3000.33f},
         };
     }
 
@@ -29,120 +32,143 @@ public class EmployeeControllerTest extends BaseManualTestClass {
     @ParameterizedTest
     @MethodSource("correctProvider")
     @Order(1)
-    public void testCorrectAddFindRemove(String firstName, String lastName) {
-        WebElement body;
-        WebElement div;
-
+    public void testCorrectAddFindRemove(String firstName, String lastName, int departmentId, float salary) {
         /* -- Успешно добавляем сотрудника -- */
 
-        driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
+        driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-        body = driver.findElement(By.cssSelector("body"));
-
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
+        checkValues(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
 
         /* -- Успешно находим сотрудника -- */
 
         driver.get("http://localhost:8888/employee/find?firstName=" + firstName + "&lastName=" + lastName);
 
-        body = driver.findElement(By.cssSelector("body"));
-
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник найден : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
+        checkValues(firstName, lastName, departmentId, salary, "Информация по сотруднику");
 
         /* -- Успешно удаляем сотрудника -- */
 
         driver.get("http://localhost:8888/employee/remove?firstName=" + firstName + "&lastName=" + lastName);
 
-        body = driver.findElement(By.cssSelector("body"));
-
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник удалён : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
+        checkValues(firstName, lastName, departmentId, salary, "Сотрудник удалён");
 
         /* -- Не находим сотрудника -- */
 
         driver.get("http://localhost:8888/employee/find?firstName=" + firstName + "&lastName=" + lastName);
 
-        div = driver.findElement(By.xpath("//body/div[2]"));
+        WebElement errorMessage = driver.findElement(By.cssSelector("td#error-message"));
 
-        Assertions.assertTrue(div.isDisplayed());
-        Assertions.assertEquals("There was an unexpected error (type=Not Found, status=404).", div.getText());
+        Assertions.assertTrue(errorMessage.isDisplayed());
+        Assertions.assertEquals("Сотрудник '" + firstName + " " + lastName + "' не найден", errorMessage.getText());
     }
 
     @Description("Check controller correct processing `EmployeeAlreadyAddedException`")
     @ParameterizedTest
     @MethodSource("correctProvider")
     @Order(2)
-    public void testEmployeeAlreadyAddedException(String firstName, String lastName) {
-        WebElement body;
-        WebElement div;
-
+    public void testEmployeeAlreadyAddedException(String firstName, String lastName, int departmentId, float salary) {
         /* -- Успешно добавляем сотрудника -- */
 
-        driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
+        driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-        body = driver.findElement(By.cssSelector("body"));
-
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
+        checkValues(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
 
         /* -- Повторно добавляем сотрудника -- */
 
-        driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
+        driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-        div = driver.findElement(By.xpath("//body/div[2]"));
+        WebElement errorMessage = driver.findElement(By.cssSelector("td#error-message"));
 
-        Assertions.assertTrue(div.isDisplayed());
-        Assertions.assertEquals("There was an unexpected error (type=Bad Request, status=400).", div.getText());
+        Assertions.assertTrue(errorMessage.isDisplayed());
+        Assertions.assertEquals("Сотрудник '" + firstName + " " + lastName + "' уже добавлен", errorMessage.getText());
+
+        WebElement errorCode = driver.findElement(By.cssSelector("td#error-code"));
+
+        Assertions.assertTrue(errorCode.isDisplayed());
+        Assertions.assertEquals("400", errorCode.getText());
 
         /* -- Успешно удаляем сотрудника -- */
 
         driver.get("http://localhost:8888/employee/remove?firstName=" + firstName + "&lastName=" + lastName);
 
-        body = driver.findElement(By.cssSelector("body"));
-
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Сотрудник удалён : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
+        checkValues(firstName, lastName, departmentId, salary, "Сотрудник удалён");
     }
 
     @Test
     @Description("Check controller correct processing `find-all` action")
     @Order(3)
     public void testEmployeeFindAll() {
-        WebElement body;
-        Name name = (new Faker()).name();
+        Faker faker = new Faker();
+        Name name = faker.name();
+
         String firstName;
         String lastName;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
+        int departmentId;
+        float salary;
+
+        ArrayList<Employee> expectedEmployeeList = new ArrayList<>();
+
 
         for (int i = 0; i < 5; i++) {
             firstName = name.firstName();
             lastName = name.lastName();
+            departmentId = faker.random().nextInt(1, 5);
+            salary = faker.random().nextInt(10_000, 50_000);
 
-            driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName);
+            driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-            body = driver.findElement(By.cssSelector("body"));
+            checkValues(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
 
-            Assertions.assertTrue(body.isDisplayed());
-            Assertions.assertEquals("Сотрудник добавлен : Employee {firstName='" + firstName + "', lastName='" + lastName + "'}", body.getText());
-
-            stringBuilder
-                    .append(i != 0 ? "," : "")
-                    .append("{\"firstName\":\"")
-                    .append(firstName)
-                    .append("\",\"lastName\":\"")
-                    .append(lastName)
-                    .append("\"}");
+            expectedEmployeeList.add(new Employee(firstName, lastName, departmentId, salary));
         }
-
-        stringBuilder.append("]");
 
         driver.get("http://localhost:8888/employee/find-all");
 
-        body = driver.findElement(By.cssSelector("body"));
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals("Список сотрудников", h1.getText());
 
-        Assertions.assertEquals(stringBuilder.toString(), body.getText());
+        for (int i = 1; i <= 5; i++) {
+            WebElement tdEmployeeFirstName = driver.findElement(By.cssSelector("tr:nth-child(" + i + ") > td#employee-first-name"));
+            Assertions.assertTrue(tdEmployeeFirstName.isDisplayed());
+            firstName = tdEmployeeFirstName.getText();
+
+            WebElement tdEmployeeLastName = driver.findElement(By.cssSelector("tr:nth-child(" + i + ") > td#employee-last-name"));
+            Assertions.assertTrue(tdEmployeeLastName.isDisplayed());
+            lastName = tdEmployeeLastName.getText();
+
+            WebElement tdEmployeeDepartment = driver.findElement(By.cssSelector("tr:nth-child(" + i + ") > td#employee-department"));
+            Assertions.assertTrue(tdEmployeeDepartment.isDisplayed());
+            departmentId = Integer.parseInt(tdEmployeeDepartment.getText());
+
+            WebElement tdEmployeeSalary = driver.findElement(By.cssSelector("tr:nth-child(" + i + ") > td#employee-salary"));
+            Assertions.assertTrue(tdEmployeeSalary.isDisplayed());
+            salary = Float.parseFloat(tdEmployeeSalary.getText());
+
+            Assertions.assertTrue(expectedEmployeeList.remove(new Employee(firstName, lastName, departmentId, salary)));
+        }
+
+        Assertions.assertEquals(0, expectedEmployeeList.size());
+    }
+
+    private void checkValues(String firstName, String lastName, int departmentId, float salary, String string) {
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals(string, h1.getText());
+
+        WebElement tdEmployeeFirstName = driver.findElement(By.cssSelector("td#employee-first-name"));
+        Assertions.assertTrue(tdEmployeeFirstName.isDisplayed());
+        Assertions.assertEquals(firstName, tdEmployeeFirstName.getText());
+
+        WebElement tdEmployeeLastName = driver.findElement(By.cssSelector("td#employee-last-name"));
+        Assertions.assertTrue(tdEmployeeLastName.isDisplayed());
+        Assertions.assertEquals(lastName, tdEmployeeLastName.getText());
+
+        WebElement tdEmployeeDepartment = driver.findElement(By.cssSelector("td#employee-department"));
+        Assertions.assertTrue(tdEmployeeDepartment.isDisplayed());
+        Assertions.assertEquals(departmentId, Integer.parseInt(tdEmployeeDepartment.getText()));
+
+        WebElement tdEmployeeSalary = driver.findElement(By.cssSelector("td#employee-salary"));
+        Assertions.assertTrue(tdEmployeeSalary.isDisplayed());
+        Assertions.assertEquals(salary, Float.parseFloat(tdEmployeeSalary.getText()));
     }
 }

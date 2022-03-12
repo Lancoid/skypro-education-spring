@@ -41,11 +41,8 @@ public class CalculatorController {
 
     @GetMapping(path = "/divide")
     public String divide(int a, int b, Model model) {
-        try {
-            model.addAttribute("text", responseFormatService.calculatorResponse(a, b, '/', calculatorService.divide(a, b)));
-        } catch (Throwable throwable) {
-            return throwable.getMessage();
-        }
+        model.addAttribute("text", responseFormatService.calculatorResponse(a, b, '/', calculatorService.divide(a, b)));
+
         return "calculator/divide";
     }
 }

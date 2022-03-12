@@ -15,9 +15,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class HelloServiceUnitTest {
     public static Object[][] correctWithUsernameDataProvider() {
         return new Object[][]{
-                {"username", "<b>Hello, username</b>"},
-                {"Vasya", "<b>Hello, Vasya</b>"},
-                {"232324TbiDbiSh", "<b>Hello, 232324TbiDbiSh</b>"}
+                {"username", "Hello, username"},
+                {"Vasya", "Hello, Vasya"},
+                {"232324TbiDbiSh", "Hello, 232324TbiDbiSh"}
         };
     }
 
@@ -25,7 +25,7 @@ public class HelloServiceUnitTest {
     @Description("Check service correct `hello()` processing")
     public void correctWithoutUsername() {
         HelloServiceInterface service = new HelloService();
-        Assertions.assertEquals("<b>Hello</b>", service.hello());
+        Assertions.assertEquals("Hello", service.hello());
     }
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- */

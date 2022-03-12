@@ -27,10 +27,10 @@ public class HelloControllerTest extends BaseManualTestClass {
     public void correctWithoutUsername() {
         driver.get("http://localhost:8888/");
 
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals("Hello", body.getText());
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals("Hello", h1.getText());
     }
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -41,9 +41,9 @@ public class HelloControllerTest extends BaseManualTestClass {
     public void correctWithUsername(String username, String expected) {
         driver.get("http://localhost:8888/hello?name=" + username);
 
-        WebElement body = driver.findElement(By.cssSelector("body"));
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
 
-        Assertions.assertTrue(body.isDisplayed());
-        Assertions.assertEquals(expected, body.getText());
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals(expected, h1.getText());
     }
 }
