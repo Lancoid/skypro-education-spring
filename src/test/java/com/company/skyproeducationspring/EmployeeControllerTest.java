@@ -6,6 +6,7 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
+import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,6 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 @DisplayName("Employee Controller Test")
 @Epic("EmployeeService")
@@ -22,7 +24,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
         return new Object[][]{
                 {"Иван", "Иванов", 1, 1000.11f},
                 {"Ivan", "Ivanov", 2, 2000.22f},
-                {"22аа", "333ббб", 3, 3000.33f},
+                {"ааа", "ббб", 3, 3000.33f},
         };
     }
 
@@ -37,28 +39,25 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
         driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-        checkValues(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
+        checkPage(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
 
         /* -- Успешно находим сотрудника -- */
 
         driver.get("http://localhost:8888/employee/find?firstName=" + firstName + "&lastName=" + lastName);
 
-        checkValues(firstName, lastName, departmentId, salary, "Информация по сотруднику");
+        checkPage(firstName, lastName, departmentId, salary, "Информация по сотруднику");
 
         /* -- Успешно удаляем сотрудника -- */
 
         driver.get("http://localhost:8888/employee/remove?firstName=" + firstName + "&lastName=" + lastName);
 
-        checkValues(firstName, lastName, departmentId, salary, "Сотрудник удалён");
+        checkPage(firstName, lastName, departmentId, salary, "Сотрудник удалён");
 
         /* -- Не находим сотрудника -- */
 
         driver.get("http://localhost:8888/employee/find?firstName=" + firstName + "&lastName=" + lastName);
 
-        WebElement errorMessage = driver.findElement(By.cssSelector("td#error-message"));
-
-        Assertions.assertTrue(errorMessage.isDisplayed());
-        Assertions.assertEquals("Сотрудник '" + firstName + " " + lastName + "' не найден", errorMessage.getText());
+        checkException(firstName, lastName, "не найден", "404");
     }
 
     @Description("Check controller correct processing `EmployeeAlreadyAddedException`")
@@ -70,27 +69,19 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
         driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-        checkValues(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
+        checkPage(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
 
         /* -- Повторно добавляем сотрудника -- */
 
         driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-        WebElement errorMessage = driver.findElement(By.cssSelector("td#error-message"));
-
-        Assertions.assertTrue(errorMessage.isDisplayed());
-        Assertions.assertEquals("Сотрудник '" + firstName + " " + lastName + "' уже добавлен", errorMessage.getText());
-
-        WebElement errorCode = driver.findElement(By.cssSelector("td#error-code"));
-
-        Assertions.assertTrue(errorCode.isDisplayed());
-        Assertions.assertEquals("400", errorCode.getText());
+        checkException(firstName, lastName, "уже добавлен", "400");
 
         /* -- Успешно удаляем сотрудника -- */
 
         driver.get("http://localhost:8888/employee/remove?firstName=" + firstName + "&lastName=" + lastName);
 
-        checkValues(firstName, lastName, departmentId, salary, "Сотрудник удалён");
+        checkPage(firstName, lastName, departmentId, salary, "Сотрудник удалён");
     }
 
     @Test
@@ -116,7 +107,7 @@ public class EmployeeControllerTest extends BaseManualTestClass {
 
             driver.get("http://localhost:8888/employee/add?firstName=" + firstName + "&lastName=" + lastName + "&departmentId=" + departmentId + "&salary=" + salary);
 
-            checkValues(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
+            checkPage(firstName, lastName, departmentId, salary, "Сотрудник добавлен");
 
             expectedEmployeeList.add(new Employee(firstName, lastName, departmentId, salary));
         }
@@ -150,18 +141,18 @@ public class EmployeeControllerTest extends BaseManualTestClass {
         Assertions.assertEquals(0, expectedEmployeeList.size());
     }
 
-    private void checkValues(String firstName, String lastName, int departmentId, float salary, String string) {
+    private void checkPage(String firstName, String lastName, int departmentId, float salary, String string) {
         WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
         Assertions.assertTrue(h1.isDisplayed());
         Assertions.assertEquals(string, h1.getText());
 
         WebElement tdEmployeeFirstName = driver.findElement(By.cssSelector("td#employee-first-name"));
         Assertions.assertTrue(tdEmployeeFirstName.isDisplayed());
-        Assertions.assertEquals(firstName, tdEmployeeFirstName.getText());
+        Assertions.assertEquals(StringUtils.capitalize(firstName.toLowerCase(Locale.ROOT)), tdEmployeeFirstName.getText());
 
         WebElement tdEmployeeLastName = driver.findElement(By.cssSelector("td#employee-last-name"));
         Assertions.assertTrue(tdEmployeeLastName.isDisplayed());
-        Assertions.assertEquals(lastName, tdEmployeeLastName.getText());
+        Assertions.assertEquals(StringUtils.capitalize(lastName.toLowerCase(Locale.ROOT)), tdEmployeeLastName.getText());
 
         WebElement tdEmployeeDepartment = driver.findElement(By.cssSelector("td#employee-department"));
         Assertions.assertTrue(tdEmployeeDepartment.isDisplayed());
@@ -170,5 +161,21 @@ public class EmployeeControllerTest extends BaseManualTestClass {
         WebElement tdEmployeeSalary = driver.findElement(By.cssSelector("td#employee-salary"));
         Assertions.assertTrue(tdEmployeeSalary.isDisplayed());
         Assertions.assertEquals(salary, Float.parseFloat(tdEmployeeSalary.getText()));
+    }
+
+    private void checkException(String firstName, String lastName, String message, String errorCode) {
+        String expectedMessage = "Сотрудник '"
+                + StringUtils.capitalize(firstName.toLowerCase(Locale.ROOT)) + " "
+                + StringUtils.capitalize(lastName.toLowerCase(Locale.ROOT)) + "' " + message;
+
+        WebElement errorMessage = driver.findElement(By.cssSelector("td#error-message"));
+
+        Assertions.assertTrue(errorMessage.isDisplayed());
+        Assertions.assertEquals(expectedMessage, errorMessage.getText());
+
+        WebElement errorCodeSelector = driver.findElement(By.cssSelector("td#error-code"));
+
+        Assertions.assertTrue(errorCodeSelector.isDisplayed());
+        Assertions.assertEquals(errorCode, errorCodeSelector.getText());
     }
 }

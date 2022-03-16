@@ -2,7 +2,6 @@ package com.company.skyproeducationspring.controllers;
 
 import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.services.employee.EmployeeServiceInterface;
-import com.company.skyproeducationspring.services.employee.EmployeeValidatorServiceInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,22 +15,14 @@ import java.util.ArrayList;
 @RequestMapping("/employee")
 public class EmployeeController {
     private final EmployeeServiceInterface employeeService;
-    private final EmployeeValidatorServiceInterface employeeValidatorService;
 
-    public EmployeeController(EmployeeServiceInterface employeeService, EmployeeValidatorServiceInterface employeeValidatorService) {
+    public EmployeeController(EmployeeServiceInterface employeeService) {
         this.employeeService = employeeService;
-        this.employeeValidatorService = employeeValidatorService;
     }
 
     @GetMapping(path = "/add")
     public String add(String firstName, String lastName, int departmentId, float salary, Model model) {
-        Employee employee = employeeService.add(
-                this.employeeValidatorService.validateFirstName(firstName),
-                this.employeeValidatorService.validateLastName(lastName),
-                departmentId,
-                salary
-        );
-
+        Employee employee = employeeService.add(firstName, lastName, departmentId, salary);
         model.addAttribute("employee", employee);
 
         log.info("EmployeeController: add {}", employee);
@@ -42,11 +33,7 @@ public class EmployeeController {
 
     @GetMapping(path = "/remove")
     public String remove(String firstName, String lastName, Model model) {
-        Employee employee = employeeService.remove(
-                this.employeeValidatorService.validateFirstName(firstName),
-                this.employeeValidatorService.validateLastName(lastName)
-        );
-
+        Employee employee = employeeService.remove(firstName, lastName);
         model.addAttribute("employee", employee);
 
         log.info("EmployeeController: remove {}", employee);
@@ -57,11 +44,7 @@ public class EmployeeController {
 
     @GetMapping(path = "/find")
     public String find(String firstName, String lastName, Model model) {
-        Employee employee = employeeService.findOne(
-                this.employeeValidatorService.validateFirstName(firstName),
-                this.employeeValidatorService.validateLastName(lastName)
-        );
-
+        Employee employee = employeeService.findOne(firstName, lastName);
         model.addAttribute("employee", employee);
 
         log.info("EmployeeController: find {}", employee);

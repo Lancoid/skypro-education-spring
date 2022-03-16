@@ -9,6 +9,7 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
+import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Locale;
 
 @DisplayName("Employee Service Test")
 @Epic("EmployeeService")
@@ -24,8 +26,8 @@ public class EmployeeServiceUnitTest {
     public static Object[][] correctProvider() {
         return new Object[][]{
                 {"Иван", "Иванов", 1, 10000},
-                {"Ivan", "Ivanov", 2, 20000},
-                {"22аа", "333ббб", 3, 30000},
+                {"IVAN", "IVANOV", 2, 20000},
+                {"ааа", "ббб", 3, 30000},
         };
     }
 
@@ -39,34 +41,26 @@ public class EmployeeServiceUnitTest {
 
         /* -- Успешно добавляем сотрудника -- */
 
-        Employee addedEmployee = service.add(firstName, lastName, departmentId, salary);
-
-        Assertions.assertEquals(firstName, addedEmployee.getFirstName());
-        Assertions.assertEquals(lastName, addedEmployee.getLastName());
+        checkEmployee(firstName, lastName, service.add(firstName, lastName, departmentId, salary));
 
         /* -- Успешно находим сотрудника -- */
 
-        Employee foundedEmployee = service.findOne(firstName, lastName);
-
-        Assertions.assertEquals(firstName, foundedEmployee.getFirstName());
-        Assertions.assertEquals(lastName, foundedEmployee.getLastName());
+        checkEmployee(firstName, lastName, service.findOne(firstName, lastName));
 
         /* -- Успешно удаляем сотрудника -- */
 
-        Employee removedEmployee = service.remove(firstName, lastName);
-
-        Assertions.assertEquals(firstName, removedEmployee.getFirstName());
-        Assertions.assertEquals(lastName, removedEmployee.getLastName());
+        checkEmployee(firstName, lastName, service.remove(firstName, lastName));
 
         /* -- Не находим сотрудника -- */
 
-        Exception exception = Assertions.assertThrows(EmployeeNotFoundException.class, () -> service.findOne(firstName, lastName));
+        Exception exception = Assertions.assertThrows(
+                EmployeeNotFoundException.class,
+                () -> service.findOne(firstName, lastName)
+        );
 
-        String expectedMessage = "Сотрудник '" + firstName + " " + lastName + "' не найден";
-        String actualMessage = exception.getMessage();
-
-        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+        checkException(firstName, lastName, "не найден", exception);
     }
+
 
     @Description("Check service correct `add` , `find` and `remove` processing")
     @ParameterizedTest
@@ -76,23 +70,20 @@ public class EmployeeServiceUnitTest {
 
         /* -- Успешно добавляем сотрудника -- */
 
-        service.add(firstName, lastName, departmentId, salary);
+        checkEmployee(firstName, lastName, service.add(firstName, lastName, departmentId, salary));
 
         /* -- Повторно добавляем сотрудника -- */
 
-        Exception exception = Assertions.assertThrows(EmployeeAlreadyAddedException.class, () -> service.add(firstName, lastName, departmentId, salary));
+        Exception exception = Assertions.assertThrows(
+                EmployeeAlreadyAddedException.class,
+                () -> service.add(firstName, lastName, departmentId, salary)
+        );
 
-        String expectedMessage = "Сотрудник '" + firstName + " " + lastName + "' уже добавлен";
-        String actualMessage = exception.getMessage();
-
-        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+        checkException(firstName, lastName, "уже добавлен", exception);
 
         /* -- Успешно удаляем сотрудника -- */
 
-        Employee removedEmployee = service.remove(firstName, lastName);
-
-        Assertions.assertEquals(firstName, removedEmployee.getFirstName());
-        Assertions.assertEquals(lastName, removedEmployee.getLastName());
+        checkEmployee(firstName, lastName, service.remove(firstName, lastName));
     }
 
     @Test
@@ -126,5 +117,20 @@ public class EmployeeServiceUnitTest {
         serviceList.sort(Comparator.comparing(Employee::getSalary));
 
         Assertions.assertEquals(expectedList, serviceList);
+    }
+
+    private void checkEmployee(String firstName, String lastName, Employee employee) {
+        Assertions.assertEquals(StringUtils.capitalize(firstName.toLowerCase(Locale.ROOT)), employee.getFirstName());
+        Assertions.assertEquals(StringUtils.capitalize(lastName.toLowerCase(Locale.ROOT)), employee.getLastName());
+    }
+
+    private void checkException(String firstName, String lastName, String message, Exception exception) {
+        String expectedMessage = "Сотрудник '"
+                + StringUtils.capitalize(firstName.toLowerCase(Locale.ROOT)) + " "
+                + StringUtils.capitalize(lastName.toLowerCase(Locale.ROOT)) + "' " + message;
+
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
     }
 }
