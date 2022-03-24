@@ -79,7 +79,7 @@ public class CalculatorServiceUnitTest {
         if (b != 0) {
             Assertions.assertEquals(expected, service.divide(a, b));
         } else {
-            Exception exception = Assertions.assertThrows(RuntimeException.class, () -> service.divide(a, b));
+            Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> service.divide(a, b));
 
             String expectedMessage = "Нельзя делить на ноль";
             String actualMessage = exception.getMessage();

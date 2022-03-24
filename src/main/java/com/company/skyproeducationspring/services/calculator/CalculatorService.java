@@ -23,7 +23,7 @@ public class CalculatorService implements CalculatorServiceInterface {
     @Override
     public int divide(final int num1, final int num2) {
         if (num2 == 0) {
-            throw new RuntimeException("Нельзя делить на ноль");
+            throw new IllegalArgumentException("Нельзя делить на ноль");
         }
         return num1 / num2;
     }
