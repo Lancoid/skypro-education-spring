@@ -6,6 +6,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -38,7 +39,7 @@ public class CalculatorServiceUnitTest {
 
     public static Object[][] divideDataProvider() {
         return new Object[][]{
-                {-101, 0, 0},
+                {-101, -101, 1},
                 {4, 2, 2},
                 {122, 11, 11}
         };
@@ -75,16 +76,17 @@ public class CalculatorServiceUnitTest {
     @MethodSource("divideDataProvider")
     public void divide(int a, int b, int expected) {
         CalculatorServiceInterface service = new CalculatorService();
+        Assertions.assertEquals(expected, service.divide(a, b));
+    }
 
-        if (b != 0) {
-            Assertions.assertEquals(expected, service.divide(a, b));
-        } else {
-            Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> service.divide(a, b));
+    @Description("Check service correct `divide` calculations by zero")
+    @Test
+    public void divideByZero() {
+        CalculatorServiceInterface service = new CalculatorService();
 
-            String expectedMessage = "Нельзя делить на ноль";
-            String actualMessage = exception.getMessage();
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> service.divide(11, 0));
+        String actualMessage = exception.getMessage();
 
-            Assertions.assertTrue(actualMessage.contains(expectedMessage));
-        }
+        Assertions.assertTrue(actualMessage.contains("Нельзя делить на ноль"));
     }
 }

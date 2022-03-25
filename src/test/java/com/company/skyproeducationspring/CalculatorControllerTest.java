@@ -5,6 +5,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
@@ -39,7 +40,7 @@ public class CalculatorControllerTest extends BaseManualTestClass {
 
     public static Object[][] divideDataProvider() {
         return new Object[][]{
-                {-101, 0, "Нельзя делить на ноль"},
+                {-101, -101, "-101 / (-101) = 1"},
                 {4, 2, "4 / 2 = 2"},
                 {122, 11, "122 / 11 = 11"}
         };
@@ -104,20 +105,25 @@ public class CalculatorControllerTest extends BaseManualTestClass {
     public void divide(int a, int b, String expected) {
         driver.get("http://localhost:8888/calculator/divide?a=" + a + "&b=" + b);
 
-        WebElement element;
+        WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
 
-        try {
-            WebElement h1 = driver.findElement(By.cssSelector("div.starter-template > h1:nth-child(1)"));
+        Assertions.assertTrue(h1.isDisplayed());
+        Assertions.assertEquals("Деление в калькуляторе", h1.getText());
 
-            Assertions.assertTrue(h1.isDisplayed());
-            Assertions.assertEquals("Деление в калькуляторе", h1.getText());
-
-            element = driver.findElement(By.cssSelector("div.starter-template > code:nth-child(2)"));
-        } catch (Throwable throwable) {
-            element = driver.findElement(By.cssSelector("td#error-message"));
-        }
+        WebElement element = driver.findElement(By.cssSelector("div.starter-template > code:nth-child(2)"));
 
         Assertions.assertTrue(element.isDisplayed());
         Assertions.assertEquals(expected, element.getText());
+    }
+
+    @Description("Check controller correct `divide` calculations by zero")
+    @Test
+    public void divideByZero() {
+        driver.get("http://localhost:8888/calculator/divide?a=11&b=0");
+
+        WebElement element = driver.findElement(By.cssSelector("td#error-message"));
+
+        Assertions.assertTrue(element.isDisplayed());
+        Assertions.assertEquals("Нельзя делить на ноль", element.getText());
     }
 }
