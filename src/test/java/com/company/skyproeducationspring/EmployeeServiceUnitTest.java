@@ -9,7 +9,7 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

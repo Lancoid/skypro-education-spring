@@ -4,7 +4,7 @@ import com.company.skyproeducationspring.exceptions.EmployeeAlreadyAddedExceptio
 import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
 import com.company.skyproeducationspring.exceptions.EmployeeValidatorException;
 import com.company.skyproeducationspring.models.Employee;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
