@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring;
+package com.company.skyproeducationspring.shoppingCart;
 
 import com.company.skyproeducationspring.services.store.ShoppingCartService;
 import com.company.skyproeducationspring.services.store.ShoppingCartServiceImpl;

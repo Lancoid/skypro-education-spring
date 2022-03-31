@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring;
+package com.company.skyproeducationspring.employee;
 
 import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.utils.BaseManualTestClass;
