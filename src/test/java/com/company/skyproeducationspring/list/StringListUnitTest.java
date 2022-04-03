@@ -110,8 +110,8 @@ public class StringListUnitTest {
             Assertions.assertEquals(funnyName, stringList.add(funnyName));
         }
 
-        Assertions.assertEquals("test index of", stringList.set(4, "test string"));
-        Assertions.assertEquals("test index of", stringList.set(5, "test string"));
+        Assertions.assertEquals("test string", stringList.set(4, "test string"));
+        Assertions.assertEquals("test string", stringList.set(5, "test string"));
 
         Assertions.assertEquals(4, stringList.indexOf("test string"));
         Assertions.assertEquals(5, stringList.lastIndexOf("test string"));
