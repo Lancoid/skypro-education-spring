@@ -25,7 +25,7 @@ public class IntListImpl implements IntList {
     public IntListImpl(int capacity) {
         listCapacity = capacity;
 
-        if (capacity >= 0) {
+        if (capacity > 0) {
             data = new int[listCapacity];
         } else {
             throw new IllegalArgumentException("Illegal Capacity: " + capacity);
@@ -45,8 +45,7 @@ public class IntListImpl implements IntList {
             expand();
         }
 
-        data[listSize] = item;
-        ++listSize;
+        data[listSize++] = item;
 
         return data[listSize - 1];
     }
@@ -57,7 +56,14 @@ public class IntListImpl implements IntList {
             throw new ArrayIndexOutOfBoundsException();
         }
 
+        if (listSize == listCapacity) {
+            expand();
+        }
+
+        System.arraycopy(data, index, data, index + 1, listSize - index);
+
         data[index] = item;
+        listSize++;
 
         return data[index];
     }
@@ -75,12 +81,12 @@ public class IntListImpl implements IntList {
 
     @Override
     public int remove(int index) {
-        int string = get(index);
+        int value = get(index);
 
-        System.arraycopy(data, index + 1, data, index, listSize);
+        System.arraycopy(data, index + 1, data, index, listCapacity - index - 1);
         listSize--;
 
-        return string;
+        return value;
     }
 
     @Override
@@ -176,6 +182,8 @@ public class IntListImpl implements IntList {
     @Override
     public void clear() {
         this.data = new int[DEFAULT_CAPACITY];
+        this.listCapacity = DEFAULT_CAPACITY;
+        this.listSize = 0;
     }
 
     @Override
@@ -184,20 +192,20 @@ public class IntListImpl implements IntList {
     }
 
     public void sort() {
-        for (int i = 0; i < listCapacity; i++) {
+        for (int i = 0; i < data.length - 1; i++) {
             int minElementIndex = i;
-
-            for (int j = i + 1; j < listCapacity; j++) {
+            for (int j = i + 1; j < data.length; j++) {
                 if (data[j] < data[minElementIndex]) {
                     minElementIndex = j;
                 }
             }
+
             swapElements(i, minElementIndex);
         }
     }
 
     private void expand() {
-        listCapacity += 1;
+        listCapacity *= 2;
 
         int[] newArray = new int[listCapacity];
         System.arraycopy(data, 0, newArray, 0, listSize);
