@@ -192,25 +192,42 @@ public class IntListImpl implements IntList {
     }
 
     public void sort() {
-        for (int i = 0; i < data.length - 1; i++) {
-            int minElementIndex = i;
-            for (int j = i + 1; j < data.length; j++) {
-                if (data[j] < data[minElementIndex]) {
-                    minElementIndex = j;
-                }
-            }
+        quickRecursionSort(0, listCapacity - 1);
+    }
 
-            swapElements(i, minElementIndex);
+    private void quickRecursionSort(int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(begin, end);
+
+            quickRecursionSort(begin, partitionIndex - 1);
+            quickRecursionSort(partitionIndex + 1, end);
         }
     }
 
     private void expand() {
-        listCapacity *= 2;
+        listCapacity = (int) (listCapacity * 1.5) + 1;
 
         int[] newArray = new int[listCapacity];
         System.arraycopy(data, 0, newArray, 0, listSize);
 
         data = newArray;
+    }
+
+    private int partition(int begin, int end) {
+        int pivot = data[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (data[j] <= pivot) {
+                i++;
+
+                swapElements(i, j);
+            }
+        }
+
+        swapElements(i + 1, end);
+
+        return i + 1;
     }
 
     private void swapElements(int indexA, int indexB) {
