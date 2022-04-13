@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.unit.calculator;
+package com.company.skyproeducationspring.unit.services;
 
 import com.company.skyproeducationspring.services.calculator.CalculatorService;
 import com.company.skyproeducationspring.services.calculator.CalculatorServiceInterface;

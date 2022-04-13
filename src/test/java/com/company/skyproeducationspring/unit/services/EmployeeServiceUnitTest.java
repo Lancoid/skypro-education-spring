@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.unit.employee;
+package com.company.skyproeducationspring.unit.services;
 
 import com.company.skyproeducationspring.exceptions.EmployeeAlreadyAddedException;
 import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
