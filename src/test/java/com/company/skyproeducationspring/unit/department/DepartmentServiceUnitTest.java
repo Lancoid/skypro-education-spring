@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.department;
+package com.company.skyproeducationspring.unit.department;
 
 import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.services.department.DepartmentService;

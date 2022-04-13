@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.hello;
+package com.company.skyproeducationspring.unit.hello;
 
 import com.company.skyproeducationspring.services.hello.HelloService;
 import com.company.skyproeducationspring.services.hello.HelloServiceInterface;

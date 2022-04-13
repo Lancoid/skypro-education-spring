@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.hello;
+package com.company.skyproeducationspring.acceptance.hello;
 
 import com.company.skyproeducationspring.utils.BaseManualTestClass;
 import io.qameta.allure.Description;

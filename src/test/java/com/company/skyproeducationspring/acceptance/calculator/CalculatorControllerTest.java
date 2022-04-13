@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.calculator;
+package com.company.skyproeducationspring.acceptance.calculator;
 
 import com.company.skyproeducationspring.utils.BaseManualTestClass;
 import io.qameta.allure.Description;
