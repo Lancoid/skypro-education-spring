@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
@@ -24,29 +22,25 @@ public class ExaminerServiceImpl implements ExaminerService {
 
     @Override
     public ArrayList<Question> getQuestions(int amount) {
-        Map<Integer, Question> questionMap = new HashMap<>();
+        ArrayList<Question> result = new ArrayList<>();
         Question question;
-        int key;
         int counter = 0;
 
-        while (questionMap.size() < amount) {
+        while (result.size() < amount) {
             try {
-                question = counter % 2 == 0
+                question = (counter % 2 != 0)
                         ? javaQuestionService.getRandomQuestion()
                         : mathQuestionService.getRandomQuestion();
 
-                key = question.hashCode();
-
-                if (!questionMap.containsKey(key)) {
-                    questionMap.put(key, question);
+                if (!result.contains(question)) {
+                    result.add(question);
+                    counter++;
                 }
-            } catch (Throwable ignored) {
-            } finally {
+            } catch (Throwable throwable) {
                 counter++;
             }
-
         }
 
-        return new ArrayList<>(questionMap.values());
+        return result;
     }
 }

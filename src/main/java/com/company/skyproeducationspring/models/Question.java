@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
-public class Question {
+public class Question implements Comparable<Question> {
     private final String question;
     private final String answer;
 
@@ -34,5 +34,10 @@ public class Question {
     @Override
     public String toString() {
         return "Question {" + "question='" + question + "'" + ", answer='" + answer + "}";
+    }
+
+    @Override
+    public int compareTo(Question o) {
+        return (this.question).compareTo(o.getQuestion());
     }
 }

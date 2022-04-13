@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class JavaQuestionRepository implements QuestionRepository {
@@ -18,25 +17,19 @@ public class JavaQuestionRepository implements QuestionRepository {
 
     @Override
     public Question add(Question question) {
-        int index = Objects.hash(question.getQuestion());
+        questionMap.put(question.hashCode(), question);
 
-        questionMap.put(index, question);
-
-        return questionMap.get(index);
+        return questionMap.get(question.hashCode());
     }
 
     @Override
     public Question remove(Question question) {
-        int index = Objects.hash(question.getQuestion());
-
-        return questionMap.remove(index);
+        return questionMap.remove(question.hashCode());
     }
 
     @Override
     public boolean contains(Question question) {
-        int index = Objects.hash(question.getQuestion());
-
-        return questionMap.containsKey(index);
+        return questionMap.containsKey(question.hashCode()) && questionMap.get(question.hashCode()).equals(question);
     }
 
     @Override
