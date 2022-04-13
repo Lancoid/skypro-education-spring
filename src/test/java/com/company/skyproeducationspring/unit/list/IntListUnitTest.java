@@ -1,4 +1,4 @@
-package com.company.skyproeducationspring.list;
+package com.company.skyproeducationspring.unit.list;
 
 import com.company.skyproeducationspring.utils.IntList;
 import com.company.skyproeducationspring.utils.IntListImpl;
