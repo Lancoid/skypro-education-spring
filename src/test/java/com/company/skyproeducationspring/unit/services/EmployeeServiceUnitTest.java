@@ -1,7 +1,7 @@
 package com.company.skyproeducationspring.unit.services;
 
-import com.company.skyproeducationspring.exceptions.EmployeeAlreadyAddedException;
-import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
+import com.company.skyproeducationspring.exceptions.employee.EmployeeAlreadyAddedException;
+import com.company.skyproeducationspring.exceptions.employee.EmployeeNotFoundException;
 import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.services.employee.EmployeeService;
 import com.company.skyproeducationspring.services.employee.EmployeeServiceInterface;

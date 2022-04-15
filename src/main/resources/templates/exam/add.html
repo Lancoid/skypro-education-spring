@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+<div layout:fragment="content">
+    <h1 th:text="${'В раздел ' + type + ' добавлен вопрос'}"></h1>
+
+    <table class="table table-bordered table-dark">
+        <tr>
+            <td>Question</td>
+            <td id="exam-question" th:text="${question.getQuestion()}"></td>
+        </tr>
+        <tr>
+            <td>Answer</td>
+            <td id="exam-answer" th:text="${question.getAnswer()}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

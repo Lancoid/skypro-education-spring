@@ -1,6 +1,6 @@
 package com.company.skyproeducationspring.services.department;
 
-import com.company.skyproeducationspring.exceptions.EmployeeNotFoundException;
+import com.company.skyproeducationspring.exceptions.employee.EmployeeNotFoundException;
 import com.company.skyproeducationspring.models.Employee;
 import com.company.skyproeducationspring.services.employee.EmployeeServiceInterface;
 import org.springframework.stereotype.Service;
