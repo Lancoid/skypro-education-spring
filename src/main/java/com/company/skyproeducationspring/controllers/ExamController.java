@@ -4,6 +4,7 @@ import com.company.skyproeducationspring.services.exam.examiner.ExaminerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -15,8 +16,8 @@ public class ExamController {
         this.examinerService = examinerService;
     }
 
-    @GetMapping(path = "/get")
-    public String getQuestions(int amount, Model model) {
+    @GetMapping(path = "/get/{amount}")
+    public String getQuestions(@PathVariable int amount, Model model) {
         model.addAttribute("type", "Java");
         model.addAttribute("questions", examinerService.getQuestions(amount));
 

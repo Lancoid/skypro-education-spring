@@ -20,23 +20,71 @@ import static org.junit.jupiter.api.Assertions.*;
 @Epic("JavaQuestionRepository")
 public class JavaQuestionRepositoryUnitTest {
     private JavaQuestionRepository questionRepository;
+    private List<Question> questionList;
 
     @BeforeEach
     public void init() {
         questionRepository = new JavaQuestionRepository();
+        questionList = new ArrayList<>();
+
+        Lorem lorem = (new Faker()).lorem();
+        for (int counter = 0; counter < 5; counter++) {
+            questionList.add(new Question(lorem.sentence(5), lorem.sentence(5)));
+        }
     }
 
-
-    @Description("Check repository correct all methods processing")
+    @Description("Check repository correct `add` methods processing")
     @Test
-    public void testAllMethods() {
-        List<Question> questionList = getQuestionList();
+    public void testAdd() {
+        for (Question question : questionList) {
+            assertEquals(question, questionRepository.add(question));
+        }
+    }
 
-        int counter = 0;
+    @Description("Check repository correct `contains` methods processing")
+    @Test
+    public void testContains() {
         for (Question question : questionList) {
             assertEquals(question, questionRepository.add(question));
             assertTrue(questionRepository.contains(question));
+        }
+    }
+
+    @Description("Check repository correct `getQuestionCount` methods processing")
+    @Test
+    public void testGetQuestionCount() {
+        int counter = 0;
+
+        for (Question question : questionList) {
+            assertEquals(question, questionRepository.add(question));
             assertEquals(++counter, questionRepository.getQuestionCount());
+        }
+    }
+
+    @Description("Check repository correct `contains` methods processing")
+    @Test
+    public void testRemove() {
+        for (Question question : questionList) {
+            assertEquals(question, questionRepository.add(question));
+        }
+
+        int counter = 5;
+        for (Question question : questionList) {
+            assertTrue(questionRepository.contains(question));
+
+            assertEquals(counter, questionRepository.getQuestionCount());
+            assertEquals(question, questionRepository.remove(question));
+            assertEquals(--counter, questionRepository.getQuestionCount());
+
+            assertFalse(questionRepository.contains(question));
+        }
+    }
+
+    @Description("Check repository correct `getAll` methods processing")
+    @Test
+    public void testGetAll() {
+        for (Question question : questionList) {
+            assertEquals(question, questionRepository.add(question));
         }
 
         List<Question> resultQuestionList = questionRepository.getAll();
@@ -45,23 +93,5 @@ public class JavaQuestionRepositoryUnitTest {
         Collections.sort(resultQuestionList);
 
         assertEquals(questionList, resultQuestionList);
-
-        for (Question question : questionList) {
-            assertEquals(counter, questionRepository.getQuestionCount());
-            assertEquals(question, questionRepository.remove(question));
-            assertEquals(--counter, questionRepository.getQuestionCount());
-            assertFalse(questionRepository.contains(question));
-        }
-    }
-
-    private List<Question> getQuestionList() {
-        List<Question> result = new ArrayList<>();
-        Lorem lorem = (new Faker()).lorem();
-
-        for (int counter = 0; counter < 5; counter++) {
-            result.add(new Question(lorem.sentence(5), lorem.sentence(5)));
-        }
-
-        return result;
     }
 }

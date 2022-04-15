@@ -70,7 +70,7 @@ public class JavaQuestionServiceUnitTest {
         Question question;
 
         when(questionRepositoryMock.getQuestionCount()).thenReturn(questionList.size());
-        when(questionRepositoryMock.getAll()).thenReturn((ArrayList<Question>) questionList);
+        when(questionRepositoryMock.getAll()).thenReturn(questionList);
 
         for (int i = 0; i < 10; i++) {
             question = javaQuestionService.getRandomQuestion();
@@ -85,7 +85,7 @@ public class JavaQuestionServiceUnitTest {
         List<Question> questionList = getQuestionList();
 
         when(questionRepositoryMock.getQuestionCount()).thenReturn(questionList.size());
-        when(questionRepositoryMock.getAll()).thenReturn((ArrayList<Question>) questionList);
+        when(questionRepositoryMock.getAll()).thenReturn(questionList);
         assertEquals(questionList, javaQuestionService.getAll());
     }
 

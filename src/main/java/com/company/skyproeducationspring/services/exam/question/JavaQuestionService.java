@@ -4,7 +4,7 @@ import com.company.skyproeducationspring.models.Question;
 import com.company.skyproeducationspring.repositories.question.QuestionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -50,7 +50,7 @@ public class JavaQuestionService implements QuestionService {
     }
 
     @Override
-    public ArrayList<Question> getAll() {
+    public List<Question> getAll() {
         if (getQuestionCount() > 0) {
             return questionRepository.getAll();
         }

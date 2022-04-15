@@ -2,7 +2,7 @@ package com.company.skyproeducationspring.repositories.question;
 
 import com.company.skyproeducationspring.models.Question;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface QuestionRepository {
     Question add(Question question);
@@ -11,7 +11,7 @@ public interface QuestionRepository {
 
     boolean contains(Question question);
 
-    ArrayList<Question> getAll();
+    List<Question> getAll();
 
     int getQuestionCount();
 }

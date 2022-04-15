@@ -1,44 +1,53 @@
 package com.company.skyproeducationspring.repositories.question;
 
+import com.company.skyproeducationspring.exceptions.question.QuestionNotAddedException;
+import com.company.skyproeducationspring.exceptions.question.QuestionNotRemoveException;
 import com.company.skyproeducationspring.models.Question;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class JavaQuestionRepository implements QuestionRepository {
-    private final Map<Integer, Question> questionMap;
+    private final Set<Question> questionSet;
 
     public JavaQuestionRepository() {
-        this.questionMap = new HashMap<>();
+        this.questionSet = new HashSet<>();
     }
 
     @Override
     public Question add(Question question) {
-        questionMap.put(question.hashCode(), question);
+        if (questionSet.add(question)) {
+            return question;
+        }
 
-        return questionMap.get(question.hashCode());
+        throw new QuestionNotAddedException();
     }
 
     @Override
     public Question remove(Question question) {
-        return questionMap.remove(question.hashCode());
+        if (questionSet.remove(question)) {
+            return question;
+        }
+
+        throw new QuestionNotRemoveException();
     }
 
     @Override
     public boolean contains(Question question) {
-        return questionMap.containsKey(question.hashCode()) && questionMap.get(question.hashCode()).equals(question);
+        return questionSet.contains(question);
     }
 
     @Override
-    public ArrayList<Question> getAll() {
-        return new ArrayList<>(questionMap.values());
+    public List<Question> getAll() {
+        return new ArrayList<>(questionSet);
     }
 
     @Override
     public int getQuestionCount() {
-        return questionMap.size();
+        return questionSet.size();
     }
 }

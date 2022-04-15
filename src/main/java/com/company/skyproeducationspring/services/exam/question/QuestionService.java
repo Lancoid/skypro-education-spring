@@ -2,7 +2,7 @@ package com.company.skyproeducationspring.services.exam.question;
 
 import com.company.skyproeducationspring.models.Question;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface QuestionService {
     Question add(String question, String answer);
@@ -13,7 +13,7 @@ public interface QuestionService {
 
     Question getRandomQuestion();
 
-    ArrayList<Question> getAll();
+    List<Question> getAll();
 
     int getQuestionCount();
 }
